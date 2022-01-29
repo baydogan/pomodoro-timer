@@ -17,10 +17,6 @@
         </div>
         <EmailField v-model="email" />
         <PassField v-model="password" />
-        <!-- <div class="mt-4 text-xs placeholder:text-xs">EMAIL</div>
-      <input type="email" class="form-input" placeholder="Your e-mail address" />
-      <div class="mt-4 text-xs">PASSWORD</div>
-      <input type="password" class="form-input" placeholder="Your password" /> -->
 
         <button
           type="submit"
