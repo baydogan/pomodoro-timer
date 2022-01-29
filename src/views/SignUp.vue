@@ -39,10 +39,10 @@ import Logo from "../components/Logo";
 import { reactive, computed } from "vue";
 import { auth, users, addDoc } from "../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { resetForm } from "../helpers";
+
 // import { useStore } from "vuex";
 
-// import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 
 export default {
   components: {
@@ -60,13 +60,20 @@ export default {
       password: "",
     });
 
+    const router = useRouter();
+
     const createUserWithEmail = async () => {
-      await createUserWithEmailAndPassword(auth, userData.email, userData.password);
-      await addDoc(users, {
-        username: userData.userName,
-        email: userData.email,
-      });
-      resetForm(userData);
+      try {
+        await createUserWithEmailAndPassword(auth, userData.email, userData.password);
+        await addDoc(users, {
+          username: userData.userName,
+          email: userData.email,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
+      router.push("Login");
     };
 
     const isDisabled = computed(() => {
