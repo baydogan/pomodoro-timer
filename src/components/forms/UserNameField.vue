@@ -21,9 +21,9 @@ import useFormValidations from "../../modules/useFormValidations";
 export default {
   setup() {
     const userNameInput = ref("");
-    const { validateInputField, errors } = useFormValidations();
+    const { validateUserNameLength, errors } = useFormValidations();
     const validName = () => {
-      validateInputField("username", userNameInput.value);
+      validateUserNameLength(userNameInput.value, "username");
     };
     return { userNameInput, validName, errors };
   },

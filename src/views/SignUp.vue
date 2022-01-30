@@ -18,7 +18,7 @@
         <UserNameField v-model="userData.userName" />
         <EmailField v-model="userData.email" />
         <PassField v-model="userData.password" />
-        <button type="submit" class="form-button bg-slate-600 font-bold shadow-lg" :disabled="isDisabled">
+        <button type="submit" class="form-button bg-slate-600 font-bold shadow-lg" :disabled="buttonState">
           SIGNUP WITH EMAIL
         </button>
       </div>
@@ -37,12 +37,11 @@ import EmailField from "../components/forms/EmailField.vue";
 import PassField from "../components/forms/PassField.vue";
 import Logo from "../components/Logo";
 import { reactive, computed } from "vue";
-import { auth, users, addDoc } from "../config/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 
 // import { useStore } from "vuex";
 
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 export default {
   components: {
@@ -53,7 +52,7 @@ export default {
   },
 
   setup() {
-    const { errors } = useFormValidations();
+    const { errors, isDisabled } = useFormValidations();
     const userData = reactive({
       userName: "",
       email: "",
@@ -61,39 +60,46 @@ export default {
     });
 
     const router = useRouter();
-
+    const store = useStore();
     const createUserWithEmail = async () => {
       try {
-        await createUserWithEmailAndPassword(auth, userData.email, userData.password);
-        await addDoc(users, {
+        store.dispatch("createUserWithEmail", {
+          email: userData.email,
+          password: userData.password,
+        });
+        store.dispatch("createUserInFirestore", {
           username: userData.userName,
           email: userData.email,
         });
       } catch (error) {
-        console.log(error);
+        console.log("error");
       }
 
-      router.push("Login");
+      router.push("/");
     };
 
-    const isDisabled = computed(() => {
-      let disabled = true;
-      for (let prop in errors) {
-        if (errors[prop] !== "") {
-          disabled = true;
-          break;
-        } else {
-          disabled = false;
-        }
-      }
-      return disabled;
+    const buttonState = computed(() => {
+      return isDisabled(errors);
     });
+
+    // const isDisabled = computed(() => {
+    //   let disabled = true;
+    //   for (let prop in errors) {
+    //     if (errors[prop] !== "") {
+    //       disabled = true;
+    //       break;
+    //     } else {
+    //       disabled = false;
+    //     }
+    //   }
+    //   return disabled;
+    // });
 
     return {
       userData,
       errors,
-      isDisabled,
       createUserWithEmail,
+      buttonState,
     };
   },
 };

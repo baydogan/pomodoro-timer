@@ -1,5 +1,5 @@
 import { initializeApp } from "@firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, deleteUser, setPersistence, browserSessionPersistence } from "firebase/auth";
 import { getFirestore, collection, getDocs, addDoc } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -14,8 +14,10 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
+
+
 const db = getFirestore();
 const users = collection(db, "users");
 const auth = getAuth();
 
-export { db, auth, getDocs, users, addDoc };
+export { db, auth, getDocs, users, addDoc, deleteUser, setPersistence, browserSessionPersistence };

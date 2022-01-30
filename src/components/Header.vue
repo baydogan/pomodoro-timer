@@ -4,7 +4,7 @@
       <Logo />
       <div class="flex items-center mt-1">
         <div class="mt-16">
-          <UserOptions v-if="userMenuPopup"/>
+          <UserOptions v-if="userMenuPopup && authUser !== null" />
         </div>
         <button class="header-button">
           <fa icon="tasks" class="fa-lg" />
@@ -20,7 +20,7 @@
           <fa icon="user-circle" class="fa-lg" />
           <span class="text-xs md:text-base"> Login </span>
         </router-link>
-        <div v-else class="flex flex-col mb-1 ml-3" @click="userMenuPopup = !userMenuPopup">
+        <div v-else class="flex flex-col mb-1 ml-3 cursor-pointer" @click="userMenuPopup = !userMenuPopup">
           <img src="../assets/default-user-image.png" class="w-10 h-10 rounded-full" alt="" />
         </div>
       </div>

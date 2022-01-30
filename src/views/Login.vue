@@ -32,19 +32,20 @@
       <div class="flex items-center justify-center flex-col">
         <div class="mt-4 text-sm mb-1 text-white">DO NOT HAVE AN ACCOUNT</div>
         <router-link to="SignUp" class="underline text-sm">Create Account</router-link>
+        <div v-if="error">{{ error }}</div>
       </div>
-      <div v-if="error">{{ error }}</div>
-      {{ authUser }}
     </div>
   </form>
 </template>
 
 <script>
 import { useStore } from "vuex";
+
 import { ref, computed } from "vue";
 import Logo from "../components/Logo";
 import EmailField from "../components/forms/EmailField.vue";
 import PassField from "../components/forms/PassField.vue";
+import { useRouter } from "vue-router";
 
 export default {
   components: {
@@ -56,15 +57,22 @@ export default {
   setup() {
     const email = ref("");
     const password = ref("");
+    const error = ref(null);
 
+    const router = useRouter();
     const store = useStore();
-    let error = ref(null);
 
-    const loginAction = () => {
-      store.dispatch("signIn", {
-        email: email.value,
-        password: password.value,
-      });
+    const loginAction = async () => {
+      try {
+        await store.dispatch("signIn", {
+          email: email.value,
+          password: password.value,
+        });
+        router.push("/");
+      } catch (err) {
+        error.value = err.message;
+        console.log(error.value);
+      }
     };
 
     const authUser = computed(() => store.getters["__authUser"]);

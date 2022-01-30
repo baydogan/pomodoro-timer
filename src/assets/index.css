@@ -752,6 +752,10 @@ body {
   height: 7rem;
 }
 
+.h-36 {
+  height: 9rem;
+}
+
 .w-96 {
   width: 24rem;
 }
@@ -1121,6 +1125,10 @@ body {
 }
 
 @media (min-width: 768px) {
+  .md\:h-28 {
+    height: 7rem;
+  }
+
   .md\:w-52 {
     width: 13rem;
   }
