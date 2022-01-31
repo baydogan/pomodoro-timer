@@ -26,7 +26,7 @@ export default {
       return store.state.authUser;
     });
     const signOut = () => {
-      store.commit("signOut");
+      store.dispatch("signOutUser");
     };
 
     const deleteUser = () => {

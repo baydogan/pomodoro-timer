@@ -1,6 +1,12 @@
 import { createStore } from "vuex";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, deleteUser, addDoc, users, setPersistence, browserSessionPersistence } from "../config/firebase";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  setPersistence,
+  browserSessionPersistence,
+  signOut,
+} from "firebase/auth";
+import { auth, deleteUser, addDoc, users } from "../config/firebase";
 
 const store = createStore({
   state: {
@@ -17,14 +23,17 @@ const store = createStore({
     },
 
     signOut(state) {
-      state.authUser = null;
+      state.authUserMail = null;
+      state.authUserId = null;
     },
   },
   actions: {
     async createUserWithEmail(context, { email, password }) {
       const response = await createUserWithEmailAndPassword(auth, email, password);
+      const userId = auth.currentUser.uid;
       if (response) {
-        context.commit("setUser", email);
+        context.commit("setUserMail", email);
+        context.commit("setUserId", userId);
       } else {
         console.log(`ERROR`);
       }
@@ -32,9 +41,10 @@ const store = createStore({
 
     async createUserInFirestore(context, { username, email }) {
       const response = await addDoc(users, { username, email });
+      const userId = auth.currentUser.uid;
       if (response) {
-        console.log(response);
-        context.commit("setUser", username);
+        context.commit("setUserMail", email);
+        context.commit("setUserId", userId);
       } else {
         console.log("error");
       }
@@ -52,6 +62,12 @@ const store = createStore({
       } else {
         console.log("ERROR :>> ");
       }
+    },
+
+    async signOutUser(context) {
+      signOut(auth).then(() => {
+        context.commit("signOut");
+      });
     },
 
     async fetchAuthUser(context) {
