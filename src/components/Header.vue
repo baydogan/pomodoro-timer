@@ -6,7 +6,7 @@
         <div class="mt-16">
           <UserOptions v-if="userMenuPopup && authUser !== null" />
         </div>
-        <button class="header-button">
+        <button class="header-button" @click="test">
           <fa icon="tasks" class="fa-lg" />
           <span class="text-xs md:text-base"> Tasks </span>
         </button>
@@ -46,14 +46,21 @@ export default {
       emit("openSettingsPopup");
     };
 
-    const authUser = computed(() => {
-      return store.state.authUser;
-    });
+    const test = () => {
+        store.dispatch("fetchAuthUser");
+      },
+      
+      
+      
+      authUser = computed(() => {
+        return store.state.authUserMail;
+      });
 
     return {
       openSettingsPopup,
       authUser,
       userMenuPopup,
+      test,
     };
   },
 };

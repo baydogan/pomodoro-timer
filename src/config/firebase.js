@@ -1,6 +1,7 @@
 import { initializeApp } from "@firebase/app";
-import { getAuth, deleteUser, setPersistence, browserSessionPersistence } from "firebase/auth";
+import { getAuth, deleteUser, setPersistence, browserSessionPersistence, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, getDocs, addDoc } from "firebase/firestore";
+import store from "../store";
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -14,10 +15,14 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
-
-
 const db = getFirestore();
 const users = collection(db, "users");
 const auth = getAuth();
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    store.dispatch("fetchAuthUser");
+  }
+});
 
 export { db, auth, getDocs, users, addDoc, deleteUser, setPersistence, browserSessionPersistence };

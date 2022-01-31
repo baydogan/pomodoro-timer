@@ -4,11 +4,16 @@ import { auth, deleteUser, addDoc, users, setPersistence, browserSessionPersiste
 
 const store = createStore({
   state: {
-    authUser: null,
+    authUserMail: null,
+    authUserId: null,
   },
   mutations: {
-    setUser(state, payload) {
-      state.authUser = payload;
+    setUserMail(state, payload) {
+      state.authUserMail = payload;
+    },
+
+    setUserId(state, payload) {
+      state.authUserId = payload;
     },
 
     signOut(state) {
@@ -39,10 +44,22 @@ const store = createStore({
       const response = await signInWithEmailAndPassword(auth, email, password);
       if (response) {
         setPersistence(auth, browserSessionPersistence);
-        context.commit("setUser", auth.currentUser.email);
+        const userId = auth.currentUser.uid;
+        const userMail = auth.currentUser.email;
+        context.commit("setUserMail", userMail);
+        context.commit("setUserId", userId);
+        // context.commit("setUser", auth.currentUser.email);
       } else {
         console.log("ERROR :>> ");
       }
+    },
+
+    async fetchAuthUser(context) {
+      const userId = auth.currentUser.uid;
+      const userMail = auth.currentUser.email;
+      if (!userId) return;
+      context.commit("setUserMail", userMail);
+      context.commit("setUserId", userId);
     },
 
     async deleteUser(context, { user }) {

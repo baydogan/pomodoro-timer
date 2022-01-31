@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="w-96 h-1/6 bg-white flex justify-center rounded-md m-auto shadow-xl flex-col fixed inset-0 z-50"
-  >
+  <div class="w-96 h-56 bg-white flex justify-center rounded-md m-auto shadow-xl flex-col fixed inset-0 z-50">
     <div class="text-left w-full p-3 flex justify-between">
       <h1 class="">Timer Settings</h1>
       <fa icon="times" class="fa-1x text-black cursor-pointer" @click="closeSettingsPopup" />
@@ -28,7 +26,6 @@
       <button class="p-3 bg-gray-800 w-20 rounded-md text-white">OK</button>
     </div>
   </div>
-
 </template>
 
 <script>
