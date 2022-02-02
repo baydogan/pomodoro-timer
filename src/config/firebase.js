@@ -1,5 +1,13 @@
 import { initializeApp } from "@firebase/app";
-import { getAuth, deleteUser, setPersistence, browserSessionPersistence, onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  deleteUser,
+  setPersistence,
+  browserSessionPersistence,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithRedirect
+} from "firebase/auth";
 import { getFirestore, collection, getDocs, addDoc } from "firebase/firestore";
 import store from "../store";
 
@@ -25,4 +33,15 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-export { db, auth, getDocs, users, addDoc, deleteUser, setPersistence, browserSessionPersistence };
+export {
+  db,
+  auth,
+  getDocs,
+  users,
+  addDoc,
+  deleteUser,
+  setPersistence,
+  browserSessionPersistence,
+  GoogleAuthProvider,
+  signInWithRedirect,
+};

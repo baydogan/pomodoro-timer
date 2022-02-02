@@ -7,6 +7,9 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth, deleteUser, addDoc, users } from "../config/firebase";
+import createPersistedState from "vuex-persistedstate";
+import SecureLS from "secure-ls";
+var ls = new SecureLS({ isCompression: false });
 
 const store = createStore({
   state: {
@@ -90,6 +93,16 @@ const store = createStore({
   getters: {
     __authUser: (state) => state.authUser,
   },
+
+  plugins: [
+    createPersistedState({
+      storage: {
+        getItem: (key) => ls.get(key),
+        setItem: (key, value) => ls.set(key, value),
+        removeItem: (key) => ls.remove(key),
+      },
+    }),
+  ],
 });
 
 export default store;

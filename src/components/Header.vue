@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { useRouter } from "vue-router";
 import UserOptions from "./UserOptions.vue";
 import { useStore } from "vuex";
 import { computed, ref } from "vue";
@@ -43,9 +44,9 @@ export default {
     const store = useStore();
     const userMenuPopup = ref(false);
     const openSettingsPopup = () => {
-      emit("openSettingsPopup");
+      authUser.value !== null ? emit("openSettingsPopup") : router.push("Login");
     };
-
+    const router = useRouter();
     const authUser = computed(() => {
       return store.state.authUserMail;
     });
