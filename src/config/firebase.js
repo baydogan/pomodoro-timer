@@ -6,9 +6,9 @@ import {
   browserSessionPersistence,
   onAuthStateChanged,
   GoogleAuthProvider,
-  signInWithRedirect
+  signInWithRedirect,
 } from "firebase/auth";
-import { getFirestore, collection, getDocs, addDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, addDoc, getDoc, doc } from "firebase/firestore";
 import store from "../store";
 
 const firebaseConfig = {
@@ -25,7 +25,9 @@ initializeApp(firebaseConfig);
 
 const db = getFirestore();
 const users = collection(db, "users");
+const userSettings = collection(db, "user-settings");
 const auth = getAuth();
+const getSettings = doc(db, "user-settings", "aDTbs9pj0LtBdP0CLDAZ");
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -44,4 +46,7 @@ export {
   browserSessionPersistence,
   GoogleAuthProvider,
   signInWithRedirect,
+  userSettings,
+  getDoc,
+  getSettings,
 };

@@ -75,7 +75,7 @@ export default {
           email: userData.email,
         });
       } catch (error) {
-        console.log("error");
+        console.log(error.message);
       }
 
       router.push("/");
@@ -86,7 +86,7 @@ export default {
       try {
         signInWithRedirect(auth, provider);
       } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
       }
     };
 

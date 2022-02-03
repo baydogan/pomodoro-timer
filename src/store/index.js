@@ -6,15 +6,22 @@ import {
   browserSessionPersistence,
   signOut,
 } from "firebase/auth";
-import { auth, deleteUser, addDoc, users } from "../config/firebase";
+import { auth, deleteUser, addDoc, users, userSettings, getDocs } from "../config/firebase";
 import createPersistedState from "vuex-persistedstate";
 import SecureLS from "secure-ls";
+
 var ls = new SecureLS({ isCompression: false });
 
 const store = createStore({
   state: {
     authUserMail: null,
     authUserId: null,
+
+    authUserOptions: {
+      pomodoro: null,
+      shortBreak: null,
+      longBreak: null,
+    },
   },
   mutations: {
     setUserMail(state, payload) {
@@ -28,6 +35,12 @@ const store = createStore({
     signOut(state) {
       state.authUserMail = null;
       state.authUserId = null;
+    },
+
+    setUserSettings(state, pomodoro, short, long) {
+      state.authUserOptions.pomodoro = pomodoro;
+      state.authUserOptions.shortBreak = short;
+      state.authUserOptions.shortBreak = long;
     },
   },
   actions: {
@@ -44,10 +57,17 @@ const store = createStore({
 
     async createUserInFirestore(context, { username, email }) {
       const response = await addDoc(users, { username, email });
-      const userId = auth.currentUser.uid;
       if (response) {
         context.commit("setUserMail", email);
-        context.commit("setUserId", userId);
+      } else {
+        console.log("error");
+      }
+    },
+
+    async createTimerSettings(context, { userEmail, pomodoro, shortBreak, longBreak }) {
+      const response = await addDoc(userSettings, { userEmail, pomodoro, shortBreak, longBreak });
+      if (response) {
+        context.commit("setUserSettings", pomodoro, shortBreak, longBreak);
       } else {
         console.log("error");
       }
@@ -81,6 +101,19 @@ const store = createStore({
       context.commit("setUserId", userId);
     },
 
+    async findUserSettings() {
+      await getDocs(userSettings).then((snapshot) => {
+        let settings = [];
+        snapshot.docs.forEach((doc) => {
+          settings.push({ ...doc.data(), id: doc.id });
+        });
+        const authUserSettings = settings.find((s) => s.userEmail === auth.currentUser.email);
+        console.log(authUserSettings);
+      });
+    },
+
+    async getAuthUserSettings() {},
+
     async deleteUser(context, { user }) {
       const response = await deleteUser(user);
       if (response) {
@@ -90,6 +123,7 @@ const store = createStore({
       }
     },
   },
+
   getters: {
     __authUser: (state) => state.authUser,
   },
