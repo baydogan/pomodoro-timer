@@ -29,9 +29,11 @@
 </template>
 
 <script>
-import { onMounted, reactive } from "vue";
+import { onBeforeMount, reactive } from "vue";
 import { useStore } from "vuex";
-import { auth } from "../config/firebase";
+import { doc, updateDoc } from "@firebase/firestore";
+import { userSettings } from "../config/firebase";
+import { computed } from "vue";
 
 export default {
   setup(props, { emit }) {
@@ -39,31 +41,36 @@ export default {
       emit("closeSettingsPopup");
     };
 
-    onMounted(async () => {
-      await store.dispatch("findUserSettings");
-    });
+    onBeforeMount(() => {
+      store.dispatch("findUserSettings")
+    })
 
     const store = useStore();
+    const authUserSettings = computed(() => store.getters["__authUserSettings"]);
+    const authUserOptions = reactive(store.getters["__authUserOptions"]);
 
     const timerSettings = reactive({
-      pomodoro: 25,
-      shortBreak: 5,
-      longBreak: 15,
+      pomodoro: authUserOptions.pomodoro,
+      shortBreak: authUserOptions.shortBreak,
+      longBreak: authUserOptions.longBreak,
     });
 
     const saveSettings = () => {
-      store.dispatch("createTimerSettings", {
-        userEmail: auth.currentUser.email,
+      const docRef = doc(userSettings, authUserSettings.value);
+      updateDoc(docRef, {
         pomodoro: timerSettings.pomodoro,
         shortBreak: timerSettings.shortBreak,
         longBreak: timerSettings.longBreak,
       });
+      store.commit("setUserSettings", timerSettings);
     };
 
     return {
       closeSettingsPopup,
       timerSettings,
       saveSettings,
+      authUserSettings,
+      authUserOptions,
     };
   },
 };

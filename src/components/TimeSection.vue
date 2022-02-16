@@ -56,22 +56,29 @@
 </template>
 
 <script>
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, onBeforeMount } from "vue";
 import { setTime } from "../helpers";
+import { useStore } from "vuex";
 export default {
   setup() {
+    onBeforeMount(async () => {
+
+    });
+    const store = useStore();
+    const authUserOptions = reactive(store.getters["__authUserOptions"]);
+
     const durations = reactive([
       {
         currentPhase: "Time to focus!",
-        duration: 25,
+        duration: store.state.authUserOptions.pomodoro,
       },
       {
         currentPhase: "Short Break",
-        duration: 5,
+        duration: authUserOptions.shortBreak,
       },
       {
         currentPhase: "Long Break",
-        duration: 15,
+        duration: authUserOptions.longBreak,
       },
     ]);
     let currentPhase = ref("Time to focus!");
@@ -95,6 +102,7 @@ export default {
 
     const startTimer = () => {
       isTimerEnable.value = !isTimerEnable.value;
+      console.log(store.state.authUserOptions.pomodoro);
     };
 
     const resetTimer = () => {

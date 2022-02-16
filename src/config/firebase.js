@@ -4,9 +4,9 @@ import {
   deleteUser,
   setPersistence,
   browserSessionPersistence,
-  onAuthStateChanged,
   GoogleAuthProvider,
   signInWithRedirect,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { getFirestore, collection, getDocs, addDoc, getDoc, doc } from "firebase/firestore";
 import store from "../store";

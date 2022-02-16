@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 
+
 const routes = [
   {
     path: "/",
@@ -8,22 +9,24 @@ const routes = [
     component: Home,
   },
   {
-    path: '/Login',
-    name: 'Login',
-    component: () => import('@/views/Login'),
+    path: "/Login",
+    name: "Login",
+    component: () => import("@/views/Login"),
   },
   {
-    path: '/SignUp',
-    name: 'SignUp',
-    component: () => import('@/views/SignUp'),
+    path: "/SignUp",
+    name: "SignUp",
+    component: () => import("@/views/SignUp"),
   },
 
   {
-    path: '/ResetPassword',
-    name: 'ResetPassword',
-    component: () => import('@/views/ResetPassword'),
+    path: "/ResetPassword",
+    name: "ResetPassword",
+    component: () => import("@/views/ResetPassword"),
   },
 ];
+
+
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

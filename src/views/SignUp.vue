@@ -74,6 +74,12 @@ export default {
           username: userData.userName,
           email: userData.email,
         });
+        store.dispatch("createTimerSettings", {
+          userEmail: userData.email,
+          pomodoro: 25,
+          shortBreak: 5,
+          longBreak: 10,
+        });
       } catch (error) {
         console.log(error.message);
       }

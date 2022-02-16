@@ -7,15 +7,12 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth, deleteUser, addDoc, users, userSettings, getDocs } from "../config/firebase";
-import createPersistedState from "vuex-persistedstate";
-import SecureLS from "secure-ls";
-
-var ls = new SecureLS({ isCompression: false });
 
 const store = createStore({
   state: {
     authUserMail: null,
     authUserId: null,
+    authUserSettings: null,
 
     authUserOptions: {
       pomodoro: null,
@@ -37,10 +34,12 @@ const store = createStore({
       state.authUserId = null;
     },
 
-    setUserSettings(state, pomodoro, short, long) {
-      state.authUserOptions.pomodoro = pomodoro;
-      state.authUserOptions.shortBreak = short;
-      state.authUserOptions.shortBreak = long;
+    setAuthUserSettings(state, payload) {
+      state.authUserSettings = payload;
+    },
+
+    setUserSettings(state, payload) {
+      state.authUserOptions = payload;
     },
   },
   actions: {
@@ -81,7 +80,6 @@ const store = createStore({
         const userMail = auth.currentUser.email;
         context.commit("setUserMail", userMail);
         context.commit("setUserId", userId);
-        // context.commit("setUser", auth.currentUser.email);
       } else {
         console.log("ERROR :>> ");
       }
@@ -101,19 +99,21 @@ const store = createStore({
       context.commit("setUserId", userId);
     },
 
-    async findUserSettings() {
+    async findUserSettings(context) {
       await getDocs(userSettings).then((snapshot) => {
         let settings = [];
         snapshot.docs.forEach((doc) => {
           settings.push({ ...doc.data(), id: doc.id });
         });
         const authUserSettings = settings.find((s) => s.userEmail === auth.currentUser.email);
-        console.log(authUserSettings);
+        const { id, userEmail, ...restData } = authUserSettings;
+        console.log(userEmail);
+        context.commit("setUserSettings", restData);
+        context.commit("setAuthUserSettings", id);
       });
     },
 
-    async getAuthUserSettings() {},
-
+ 
     async deleteUser(context, { user }) {
       const response = await deleteUser(user);
       if (response) {
@@ -125,18 +125,10 @@ const store = createStore({
   },
 
   getters: {
-    __authUser: (state) => state.authUser,
+    __authUser: (state) => state.authUserMail,
+    __authUserSettings: (state) => state.authUserSettings,
+    __authUserOptions: (state) => state.authUserOptions,
   },
-
-  plugins: [
-    createPersistedState({
-      storage: {
-        getItem: (key) => ls.get(key),
-        setItem: (key, value) => ls.set(key, value),
-        removeItem: (key) => ls.remove(key),
-      },
-    }),
-  ],
 });
 
 export default store;
