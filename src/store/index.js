@@ -113,7 +113,6 @@ const store = createStore({
       });
     },
 
- 
     async deleteUser(context, { user }) {
       const response = await deleteUser(user);
       if (response) {

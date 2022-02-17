@@ -43,6 +43,7 @@ export default {
 
     onBeforeMount(() => {
       store.dispatch("findUserSettings")
+      console.log(authUserSettings.value)
     })
 
     const store = useStore();
